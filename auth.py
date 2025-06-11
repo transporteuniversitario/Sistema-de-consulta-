@@ -1,6 +1,10 @@
 import streamlit as st
 import sqlite3
 import hashlib
+from database import init_db
+
+init_db()
+
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
