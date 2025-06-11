@@ -3,22 +3,20 @@ import sqlite3
 import hashlib
 from database import init_db
 
-init_db()
-
-
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
 def create_users_table():
     conn = sqlite3.connect("users.db")
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT)''')
     c.execute("INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)", 
               ("admin", hash_password("admin")))
     conn.commit()
     conn.close()
 
 def login_screen():
+    init_db()
     create_users_table()
     st.title("Login")
     username = st.text_input("Usuário")
