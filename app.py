@@ -8,6 +8,7 @@ from screens.consultas import consultas_screen
 from screens.usuarios import cadastro_usuario_screen
 from screens.agenda_medicos import agenda_medicos_screen
 
+
 st.set_page_config(page_title="Sistema de Agendamento", layout="wide")
 
 if 'usuario' not in st.session_state:
