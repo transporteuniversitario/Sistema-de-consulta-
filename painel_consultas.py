@@ -5,7 +5,17 @@ import pandas as pd
 def painel_consultas_screen():
     st.header("Painel de Consultas")
     conn = sqlite3.connect("users.db")
-    df = pd.read_sql_query("SELECT * FROM agendamentos", conn)
+    df = pd.read_sql_query("""
+    SELECT 
+        a.paciente, 
+        a.medico, 
+        m.especialidade,
+        a.data, 
+        a.hora, 
+        a.status
+    FROM agendamentos a
+    LEFT JOIN medicos m ON a.medico = m.nome
+""", conn)
     if df.empty:
         st.info("Nenhuma consulta agendada.")
         return
@@ -19,3 +29,16 @@ def painel_consultas_screen():
 
     st.dataframe(df)
     conn.close()
+
+import io
+
+# Exportar como Excel
+if not df.empty:
+    buffer = io.BytesIO()
+    df.to_excel(buffer, index=False, engine='openpyxl')
+    st.download_button(
+        label="📥 Baixar agenda em Excel",
+        data=buffer.getvalue(),
+        file_name=f"agenda_{especialidade}_{data}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
